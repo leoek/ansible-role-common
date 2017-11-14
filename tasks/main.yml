@@ -1,0 +1,33 @@
+---
+#tasks file for common
+
+- name: Update all packages to the latest version
+  become: true
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+#install some basics
+
+- name: "install some basics"
+  become: true
+  apt: name={{item}} state=present
+  with_items:
+    - nano
+    - openssl
+    - tar
+    - rsync
+
+- name: "install some monitoring tools etc"
+  become: true
+  apt: name={{item}} state=present
+  with_items:
+    - htop
+    - iftop
+    - vnstat
+
+#do some security stuff
+
+- include: fail2ban.yml
+
+- include: firewall_ufw.yml

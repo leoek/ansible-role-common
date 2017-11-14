@@ -1,0 +1,41 @@
+---
+#tasks file for firewall(ufw)
+##included in common/main.yml
+
+- name: "install firewall(ufw)"
+  become: true
+  apt: name={{item}} state=present
+  with_items:
+    - ufw
+
+- name: "ufw allow ssh (always) !important"
+  become: true
+  ufw:
+    rule: allow
+    name: ssh
+  notify: reload_ufw  
+
+- name: "copy ufw config before.rules"
+  become: true
+  copy:
+    src: before.rules
+    dest: /etc/ufw/before.rules
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+  notify: reload_ufw
+
+- name: update ufw default forward policy to ACCEPT (for vpn)
+  become: true
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: ^DEFAULT_FORWARD_POLICY
+    line: DEFAULT_FORWARD_POLICY="ACCEPT"
+  notify: reload_ufw
+
+- name: "enable ufw"
+  become: true
+  ufw:
+    state: enabled
+  notify: reload_ufw

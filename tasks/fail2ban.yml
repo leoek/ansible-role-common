@@ -1,0 +1,19 @@
+---
+#tasks for fail2ban
+
+- name: "install fail2ban"
+  become: true
+  apt: name={{item}} state=present
+  with_items:
+    - fail2ban
+
+- name: "copy fail2ban config jail.local"
+  become: true
+  copy:
+    src: jail.local
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+  notify: restart_fail2ban
