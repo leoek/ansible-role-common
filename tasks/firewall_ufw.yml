@@ -13,7 +13,24 @@
   ufw:
     rule: allow
     name: ssh
-  notify: reload_ufw  
+  notify: reload_ufw
+  register: ufw_status
+  ignore_errors: True
+
+  #if ufw fails wipe other rules in the iptables and try again
+- name: try to fix ufw
+  become: True
+  command: "sudo ufw disable; sudo iptables -F; sudo iptables -X; sudo ip6tables -F; sudo ip6tables -X; sudo ufw allow ssh; sudo ufw enable"
+  notify: reload_ufw
+  when: ufw_status | failed
+
+- name: "try again: ufw allow ssh (always) !important"
+  become: true
+  ufw:
+    rule: allow
+    name: ssh
+  notify: reload_ufw
+  when: ufw_status | failed
 
 - name: "copy ufw config before.rules"
   become: true
