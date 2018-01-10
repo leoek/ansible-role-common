@@ -5,7 +5,9 @@
   become: true
   apt:
     update_cache: yes
-    upgrade: dist
+    #upgrade: dist
+    name: "*"
+    state: latest
 
 #install some basics
 
