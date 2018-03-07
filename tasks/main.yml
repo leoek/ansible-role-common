@@ -35,6 +35,7 @@
     - htop
     - iftop
     - vnstat
+    - nload
 
 #do some security stuff
 
