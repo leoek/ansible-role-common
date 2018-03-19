@@ -30,7 +30,16 @@
     rule: allow
     name: ssh
   notify: reload_ufw
+  register: ufw_status_fallback
   when: ufw_status | failed
+
+- name: "try again: ufw allow ssh (always) !important"
+  become: true
+  ufw:
+    rule: allow
+    name: OpenSSH
+  notify: reload_ufw
+  when: ufw_status_fallback | failed
 
 - name: "copy ufw config before.rules"
   become: true

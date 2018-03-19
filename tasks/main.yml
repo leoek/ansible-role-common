@@ -39,6 +39,6 @@
 
 #do some security stuff
 
-- include: fail2ban.yml
+- import_tasks: fail2ban.yml
 
-- include: firewall_ufw.yml
+- import_tasks: firewall_ufw.yml
