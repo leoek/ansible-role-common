@@ -60,7 +60,7 @@ usedns = warn
 #
 # Destination email address used solely for the interpolations in
 # jail.{conf,local} configuration files.
-destemail = leo@herr-ek.de
+destemail = fail2ban@localhost
 
 #
 # Name of the sender for mta actions
@@ -108,7 +108,7 @@ action_mwl = %(banaction)s[name=%(__name__)s, port="%(port)s", protocol="%(proto
 # Choose default action.  To change, just override value of 'action' with the
 # interpolation to the chosen action shortcut (e.g.  action_mw, action_mwl, etc) in jail.local
 # globally (section [DEFAULT]) or per specific section
-action = %(action_mwl)s
+action = %(action_)s
 
 #
 # JAILS
