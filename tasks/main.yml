@@ -27,6 +27,8 @@
     - openssl
     - tar
     - rsync
+    - curl
+    - wget
 
 - name: "install some monitoring tools etc"
   become: true
