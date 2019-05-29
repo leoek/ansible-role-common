@@ -17,12 +17,22 @@
   register: ufw_status
   ignore_errors: True
 
+- name: "ufw allow ssh (always) !important"
+  become: true
+  ufw:
+    rule: allow
+    name: OpenSSH
+  notify: reload_ufw
+  register: ufw_status_openssh
+  ignore_errors: True
+  when: ufw_status is failed
+
   #if ufw fails wipe other rules in the iptables and try again
 - name: try to fix ufw
   become: True
   command: "sudo ufw disable; sudo iptables -F; sudo iptables -X; sudo ip6tables -F; sudo ip6tables -X; sudo ufw allow ssh; sudo ufw enable"
   notify: reload_ufw
-  when: ufw_status | failed
+  when: (ufw_status is failed) and (ufw_status_openssh is failed)
 
 - name: "try again: ufw allow ssh (always) !important"
   become: true
@@ -31,7 +41,7 @@
     name: ssh
   notify: reload_ufw
   register: ufw_status_fallback
-  when: ufw_status | failed
+  when: (ufw_status is failed) and (ufw_status_openssh is failed)
 
 - name: "try again: ufw allow ssh (always) !important"
   become: true
@@ -39,7 +49,8 @@
     rule: allow
     name: OpenSSH
   notify: reload_ufw
-  when: ufw_status_fallback | failed
+  register: ufw_status_openssh_fallback
+  when: ufw_status_fallback is failed
 
 - name: "copy ufw config before.rules"
   become: true
